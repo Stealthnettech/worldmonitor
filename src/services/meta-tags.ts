@@ -1,3 +1,4 @@
+import { SELF_HOSTED } from '@/config/self-hosted';
 import { SITE_VARIANT } from '@/config/variant';
 import { VARIANT_META } from '@/config/variant-meta';
 import { getCanonicalApiOrigin } from '@/services/runtime';
@@ -49,7 +50,7 @@ export function updateMetaTagsForStory(meta: StoryMeta): void {
 }
 
 export function resetMetaTags(): void {
-  document.title = variantMeta.title;
+  document.title = SELF_HOSTED ? 'StealthNet Monitor' : variantMeta.title;
 
   setMetaTag('title', variantMeta.title);
   setMetaTag('description', variantMeta.description);

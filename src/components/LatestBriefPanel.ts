@@ -19,6 +19,7 @@
  * displays + links to it.
  */
 
+import { SELF_HOSTED } from '@/config/self-hosted';
 import { Panel } from './Panel';
 import { getClerkToken, clearClerkTokenCache } from '@/services/clerk';
 import { PanelGateReason, hasPremiumAccess, readClientEntitlementBelief } from '@/services/panel-gating';
@@ -410,9 +411,9 @@ export class LatestBriefPanel extends Panel {
     this.setContentNodes(
       h('div', { className: 'latest-brief-card latest-brief-card--composing' },
         logo,
-        h('div', { className: 'latest-brief-empty-title' }, 'Sign in to view your brief.'),
+        h('div', { className: 'latest-brief-empty-title' }, SELF_HOSTED ? 'Personal brief: coming with SNT-MIP.' : 'Sign in to view your brief.'),
         h('div', { className: 'latest-brief-empty-body' },
-          'Your personalised brief is tied to your WorldMonitor account. Sign in to see today\u2019s issue.',
+          SELF_HOSTED ? 'This panel used the upstream vendor\u2019s account service. The StealthNet morning brief replaces it.' : 'Your personalised brief is tied to your WorldMonitor account. Sign in to see today\u2019s issue.',
         ),
       ),
     );
