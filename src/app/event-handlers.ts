@@ -1,3 +1,4 @@
+import { SELF_HOSTED } from '@/config/self-hosted';
 import type {
   AppContext,
   AppModule,
@@ -2287,7 +2288,7 @@ export class EventHandlerManager implements AppModule {
     );
     this.ctx.authHeaderWidget = widget;
     const mount = document.getElementById('authWidgetMount');
-    if (mount) {
+    if (mount && !SELF_HOSTED) {
       mount.appendChild(widget.getElement());
     }
 
