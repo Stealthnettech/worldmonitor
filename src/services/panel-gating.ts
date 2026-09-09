@@ -8,11 +8,11 @@
  *
  * What stays here is what every gate shares: the access predicate
  * (`hasPremiumAccess`), the reason enum and its billing-aware refinement, and
- * the CTA action resolver. Gate modules import { SELF_HOSTED } from '@/config/self-hosted';
-import from this file; it imports from
+ * the CTA action resolver. Gate modules import from this file; it imports from
  * none of them, so the dependency runs one way.
  */
 
+import { SELF_HOSTED } from '@/config/self-hosted';
 import { WEB_APP_ORIGIN } from '@/config/web-origin';
 import type { AuthSession } from './auth-state';
 import { getSubscription, openBillingPortal, prereserveBillingPortalTab } from './billing';
