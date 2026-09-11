@@ -1,5 +1,7 @@
 import './styles/base-layer.css';
 import './bootstrap/zod-csp';
+import { installSelfHostedFetch } from '@/config/self-hosted';
+installSelfHostedFetch();
 import { SITE_VARIANT } from '@/config/variant';
 import { installLcpAttributionDebug } from '@/bootstrap/lcp-attribution';
 import { markLcpDebug } from '@/utils/lcp-debug';
