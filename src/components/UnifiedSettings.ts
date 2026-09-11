@@ -1,3 +1,4 @@
+import { SELF_HOSTED } from '@/config/self-hosted';
 import { CANONICAL_FEEDS, INTEL_SOURCES, SOURCE_REGION_MAP } from '@/config/feeds';
 import { WEB_APP_ORIGIN } from '@/config/web-origin';
 import { openExternalUrl } from '@/services/external-navigation';
@@ -818,7 +819,7 @@ export class UnifiedSettings {
     });
     const showNotificationsTab = !this.config.isDesktopApp;
     const notifs = showNotificationsTab
-      ? renderNotificationsSettings({ isSignedIn })
+      ? (SELF_HOSTED ? '<div class="settings-section"><p class="settings-note">Alerts on StealthNet Monitor are delivered by n8n workflows (Teams / push), not the upstream subscription service. Configure them in n8n.</p></div>' : renderNotificationsSettings({ isSignedIn }))
       : null;
     const showMcpClientsTab = hasFeature('mcpAccess');
     // Gated on `embedAccess`, NOT `apiAccess`, for the same reason MCP Clients
@@ -1752,6 +1753,7 @@ export class UnifiedSettings {
   }
 
   private renderApiKeysContent(): string {
+    if (SELF_HOSTED) return '<div class="settings-section"><p class="settings-note">API keys are configured server-side on this instance (docker-compose.override.yml on SNTWM01; LLM access via LiteLLM). There is nothing to manage here.</p></div>';
     const authState = getAuthState();
 
     if (!authState.user) {

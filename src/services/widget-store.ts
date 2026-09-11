@@ -1,3 +1,4 @@
+import { SELF_HOSTED } from '@/config/self-hosted';
 import { loadFromStorage, saveToStorage } from '@/utils';
 import { safeStorageGet } from '@/utils/safe-storage';
 import { clearPanelColSpanEntry, clearPanelSpanEntry } from '@/utils/panel-storage';
@@ -235,6 +236,7 @@ export function isProWidgetEnabled(): boolean {
 }
 
 export function isProUser(): boolean {
+  if (SELF_HOSTED) return true;
   return (
     isWidgetFeatureEnabled() ||
     isProWidgetEnabled() ||
