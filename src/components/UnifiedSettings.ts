@@ -89,12 +89,12 @@ export interface UnifiedSettingsConfig {
   isDesktopApp: boolean;
   onMapProviderChange?: (provider: MapProvider) => void;
   /**
-   * The user finished editing Settings → SOURCES and the enabled set is not
+   * The user finished editing Settings â†’ SOURCES and the enabled set is not
    * what it was when the overlay opened.
    *
    * Sources apply to `ctx.disabledSources` on click (no draft/Save step like
    * panels), but nothing subscribed to that write, so the change only reached
-   * the dashboard at the next `REFRESH_INTERVALS.feeds` tick — 20 minutes
+   * the dashboard at the next `REFRESH_INTERVALS.feeds` tick â€” 20 minutes
    * (#6380). This is the subscription.
    *
    * Fired on teardown rather than per click on purpose: the overlay covers the
@@ -113,7 +113,7 @@ type AccountRequest = { userId: string; generation: number };
  * Plan-card palette per billing status tone (#7315).
  *
  * The tone comes from the shared coverage predicate in billing-state.ts, never
- * from a status string compared here — a cancelled plan still inside its paid
+ * from a status string compared here â€” a cancelled plan still inside its paid
  * window is a paying customer and must not be painted like a dead account.
  *
  * `unknown` (a provider status this client does not model) is deliberately the
@@ -226,10 +226,10 @@ export class UnifiedSettings {
       }
 
       if (target.closest('.upgrade-to-business-btn')) {
-        // Self-serve Starter→Business upgrade (#4634): open the Dodo customer
+        // Self-serve Starterâ†’Business upgrade (#4634): open the Dodo customer
         // portal, which surfaces the prorated plan change via the product
         // collection ("Allow Subscription Updates" enabled). Same hosted open
-        // path as Manage Billing — Dodo owns payment + 3DS + proration; a failed
+        // path as Manage Billing â€” Dodo owns payment + 3DS + proration; a failed
         // charge (prevent_change) leaves the customer on Starter.
         const reservedWin = prereserveBillingPortalTab();
         void openBillingPortal(reservedWin).then((result) => {
@@ -571,7 +571,7 @@ export class UnifiedSettings {
     // already up (the deep-dive "Notify me about this country" jump to the
     // notifications tab, an overlayHistory replace), and re-snapshotting there
     // would adopt a source change already made in this session as the baseline
-    // — silently discarding the very reload this exists to trigger.
+    // â€” silently discarding the very reload this exists to trigger.
     if (this.sourceSelectionBaseline === null) {
       this.sourceSelectionBaseline = this.sourceSelectionSignature();
     }
@@ -596,7 +596,7 @@ export class UnifiedSettings {
     this.unsubscribeEntitlement = onEntitlementChange((state) => {
       if (this.accountEntitlementRefreshPending) {
         // Entitlements are account-scoped. Rebuild every account surface so a
-        // direct A→B handoff removes/adds MCP and API tabs using B's snapshot.
+        // direct Aâ†’B handoff removes/adds MCP and API tabs using B's snapshot.
         // Keep the marker through the reset(null) emission; the first real B
         // snapshot must rebuild once more before ordinary targeted refreshes.
         if (state !== null) this.accountEntitlementRefreshPending = false;
@@ -672,7 +672,7 @@ export class UnifiedSettings {
 
   public close(origin: OverlayCloseOrigin = 'control'): void {
     if (origin === 'history') this.historyRegistered = false;
-    // Unsaved panel changes → confirm before tearing down. The confirm is a
+    // Unsaved panel changes â†’ confirm before tearing down. The confirm is a
     // non-blocking in-app dialog (#4559): close() stays synchronous (8 callers)
     // and defers teardown to the user's choice instead of a blocking confirm().
     if (origin !== 'replacement' && this.hasPendingPanelChanges()) {
@@ -737,9 +737,9 @@ export class UnifiedSettings {
   /**
    * Tell the host the source selection moved during this settings session.
    *
-   * Every close path funnels through teardownSettings — the close button, Esc,
+   * Every close path funnels through teardownSettings â€” the close button, Esc,
    * the overlay backdrop, mobile history back, and the discard branch of the
-   * unsaved-panel-changes confirm — so this is the single chokepoint. `destroy()`
+   * unsaved-panel-changes confirm â€” so this is the single chokepoint. `destroy()`
    * deliberately does not reach it: the dashboard is going away.
    */
   private notifySourceSelectionChanged(): void {
@@ -819,7 +819,7 @@ export class UnifiedSettings {
     });
     const showNotificationsTab = !this.config.isDesktopApp;
     const notifs = showNotificationsTab
-      ? (SELF_HOSTED ? '<div class="settings-section"><p class="settings-note">Alerts on StealthNet Monitor are delivered by n8n workflows (Teams / push), not the upstream subscription service. Configure them in n8n.</p></div>' : renderNotificationsSettings({ isSignedIn }))
+      ? (SELF_HOSTED ? { html: '<div class="settings-section"><p class="settings-note">Alerts on StealthNet Monitor are delivered by n8n workflows (Teams / push), not the upstream subscription service. Configure them in n8n.</p></div>', attach: () => () => {} } : renderNotificationsSettings({ isSignedIn }))
       : null;
     const showMcpClientsTab = hasFeature('mcpAccess');
     // Gated on `embedAccess`, NOT `apiAccess`, for the same reason MCP Clients
@@ -933,7 +933,7 @@ export class UnifiedSettings {
       this.prefsCleanup = prefs.attach(settingsPanel as HTMLElement);
     }
 
-    // Defer notifications attach until the tab is first activated —
+    // Defer notifications attach until the tab is first activated â€”
     // otherwise Pro users pay a getChannelsData() fetch on every modal
     // open even if they never visit this tab.
     this.pendingNotifs = notifs;
@@ -1019,7 +1019,7 @@ export class UnifiedSettings {
       void this.loadMcpClients();
       this.startMcpQuotaPolling();
     } else {
-      // Stop polling when switching away — no need to keep the timer running
+      // Stop polling when switching away â€” no need to keep the timer running
       // for a hidden tab.
       this.stopMcpQuotaPolling();
     }
@@ -1037,13 +1037,13 @@ export class UnifiedSettings {
     }
   }
 
-  // Pending state shown while the plan is still resolving — used both before
+  // Pending state shown while the plan is still resolving â€” used both before
   // the entitlement snapshot arrives and, for an entitled owner, while the
   // subscription watch is still settling (#6772).
   private renderPlanCheckingState(): string {
     return `
         <div class="upgrade-pro-section upgrade-pro-loading" role="status" aria-live="polite">
-          <div class="upgrade-pro-title">Checking your plan…</div>
+          <div class="upgrade-pro-title">Checking your planâ€¦</div>
           <div class="upgrade-pro-desc">This usually takes only a moment.</div>
         </div>
       `;
@@ -1070,13 +1070,13 @@ export class UnifiedSettings {
         <div class="upgrade-pro-section upgrade-pro-lapsed" data-billing-state="lapsed">
           <div class="upgrade-pro-title">${escapeHtml(t('components.billingState.resubscribe'))}: ${escapeHtml(planName)}</div>
           <div class="upgrade-pro-desc">${escapeHtml(t('components.billingState.lapsedDesc'))}</div>
-          <a class="upgrade-pro-cta-link" href="${WEB_APP_ORIGIN}${getReactivationHref(sub?.planKey)}" target="_blank" rel="noopener">${escapeHtml(t('components.billingState.resubscribe'))} →</a>
+          <a class="upgrade-pro-cta-link" href="${WEB_APP_ORIGIN}${getReactivationHref(sub?.planKey)}" target="_blank" rel="noopener">${escapeHtml(t('components.billingState.resubscribe'))} â†’</a>
         </div>
       `;
     }
     // Signed-in user whose Convex entitlement snapshot has not arrived yet.
     // Rendering "Upgrade to Pro" in this window is how paying users click through to
-    // /api/create-checkout and hit 409 duplicate_subscription — same race
+    // /api/create-checkout and hit 409 duplicate_subscription â€” same race
     // as the 2026-04-17/18 panel-overlay incident fixed in panel-gating.ts,
     // different surface. The verification service stays pending across the
     // complete Clerk/Convex retry schedule and publishes unavailable only
@@ -1093,7 +1093,7 @@ export class UnifiedSettings {
       const sub = getSubscription();
       // A Pro owner's entitlement snapshot can arrive before their own
       // subscription watch settles. In that window getSubscription() is null
-      // but the user is NOT a Business invitee — falling through would render
+      // but the user is NOT a Business invitee â€” falling through would render
       // "Billing is managed by your plan owner" and hide Manage Billing from a
       // paying owner. Treat an unresolved watch like the pending state above;
       // the invitee copy below is reserved for a *settled* null (#6772).
@@ -1103,7 +1103,7 @@ export class UnifiedSettings {
       const planName = sub?.displayName ?? 'Pro';
       const now = Date.now();
       // A Business Pro grant invitee has no own subscription row (sub === null)
-      // but IS entitled (we're inside the isEntitled() branch) — they hold a
+      // but IS entitled (we're inside the isEntitled() branch) â€” they hold a
       // grant that is working, so paint them like an active plan.
       const tone: BillingStatusTone = sub === null
         ? 'active'
@@ -1122,7 +1122,7 @@ export class UnifiedSettings {
           statusLine = 'Expired';
         } else {
           // A status this client does not model yet. We are inside the
-          // isEntitled() branch, so access is working — say only that, and
+          // isEntitled() branch, so access is working â€” say only that, and
           // point at the billing portal rather than leaving the `unknown`
           // tone as a bare grey dot with no sentence at all.
           statusLine = 'See Manage Billing for your current plan details.';
@@ -1130,7 +1130,7 @@ export class UnifiedSettings {
       }
 
       // An invitee holding a Business Pro grant has Pro features but no own
-      // subscription row — they hold a grant, not a subscription, so the
+      // subscription row â€” they hold a grant, not a subscription, so the
       // billing surface remains owner-only. Show their plan status without
       // the Manage Billing CTA that would 404 against Dodo.
       const hasOwnSubscription = sub !== null;
@@ -1161,7 +1161,7 @@ export class UnifiedSettings {
           <div class="upgrade-pro-title">Plan status unavailable</div>
           <div class="upgrade-pro-desc">We could not verify your current plan. Try again or view plans in a new tab.</div>
           <button class="manage-billing-btn retry-plan-status-btn" style="margin-bottom:8px;">Try again</button>
-          <a class="upgrade-pro-cta-link" href="${WEB_APP_ORIGIN}/pro" target="_blank" rel="noopener">View plans →</a>
+          <a class="upgrade-pro-cta-link" href="${WEB_APP_ORIGIN}/pro" target="_blank" rel="noopener">View plans â†’</a>
         </div>
       `;
     }
@@ -1177,7 +1177,7 @@ export class UnifiedSettings {
   }
 
   // Business Pro seats (#4634/#4635) state/render/handlers live in
-  // BusinessSeatsSection — see this.businessSeatsSection.
+  // BusinessSeatsSection â€” see this.businessSeatsSection.
 
   private handleUpgradeClick(): void {
     // Defense in depth: re-check at click time so a late-arriving "you're a
@@ -1205,7 +1205,7 @@ export class UnifiedSettings {
     this.close();
     if (this.config.isDesktopApp) {
       // Desktop deliberately skips in-app checkout and sends the user to the
-      // pricing page — but a bare window.open only opens another WebView
+      // pricing page â€” but a bare window.open only opens another WebView
       // window. `openExternalUrl` hands it to the OS browser (#5911).
       void openExternalUrl(`${WEB_APP_ORIGIN}/pro`);
       return;
@@ -1403,7 +1403,7 @@ export class UnifiedSettings {
 
   private getAvailableRegions(): Array<{ key: string; label: string }> {
     // A region pill shows when at least one of its sources is actually being
-    // loaded — getAllSourceNames() covers the active preset PLUS any cross-
+    // loaded â€” getAllSourceNames() covers the active preset PLUS any cross-
     // variant panels the user enabled, so customized-in regions appear too.
     const allowed = new Set(this.config.getAllSourceNames());
     const regions: Array<{ key: string; label: string }> = [
@@ -1430,8 +1430,8 @@ export class UnifiedSettings {
   private getSourcesByRegion(): Map<string, string[]> {
     const map = new Map<string, string[]>();
     // Resolve region membership from CANONICAL_FEEDS (the all-variant union),
-    // then intersect with the sources actually loaded — getAllSourceNames()
-    // already covers the active preset + any custom panels the user enabled —
+    // then intersect with the sources actually loaded â€” getAllSourceNames()
+    // already covers the active preset + any custom panels the user enabled â€”
     // so a customized-in panel's sources show under their proper region pill,
     // not just the 'all' view.
     const allowed = new Set(this.config.getAllSourceNames());
@@ -1515,7 +1515,7 @@ export class UnifiedSettings {
   /**
    * Presets with at least one source that resolves in the runtime-known
    * source set. Narrow variants (or disabled news panels) can leave a preset
-   * with nothing to enable — those chips are dead, so don't offer them.
+   * with nothing to enable â€” those chips are dead, so don't offer them.
    */
   private getApplicableTheaterPresets(): readonly TheaterPreset[] {
     const known = new Set(this.config.getAllSourceNames());
@@ -1538,7 +1538,7 @@ export class UnifiedSettings {
     const label = t(preset.labelKey);
 
     // Zero resolvable sources (narrow variant or unloaded panels) is not the
-    // same as "already applied" — say so. Normally unreachable because the
+    // same as "already applied" â€” say so. Normally unreachable because the
     // chips row only renders applicable presets; kept as a defensive guard.
     if (resolvable.length === 0) {
       showToast(t('theaterPresets.unavailable', { preset: label }));
@@ -1551,7 +1551,7 @@ export class UnifiedSettings {
     }
 
     // setSourcesEnabled no-ops (with its own free-cap toast) when the free
-    // source cap would be exceeded — only re-render and claim success when
+    // source cap would be exceeded â€” only re-render and claim success when
     // state actually changed.
     const disabledSizeBefore = this.config.getDisabledSources().size;
     this.config.setSourcesEnabled(toEnable, true);
@@ -1686,7 +1686,7 @@ export class UnifiedSettings {
       // Never send an active subscriber to a fresh checkout. The upgrade target
       // (api_starter) sits in a DIFFERENT tierGroup than an existing Pro sub, and
       // getCheckoutBlockingSubscription only blocks a same-tierGroup duplicate
-      // (#4797) — so startCheckout would STACK a second live subscription and
+      // (#4797) â€” so startCheckout would STACK a second live subscription and
       // double-charge. Route entitled users to the billing portal instead (same
       // precedent as handleUpgradeClick); its no-customer outcome surfaces the
       // support path for a subscription managed outside Dodo.
@@ -1781,7 +1781,7 @@ export class UnifiedSettings {
       <div class="api-keys-section">
         <div data-plan-limit-notices>${this.renderPlanLimitNotices()}</div>
         <div class="api-keys-header">
-          <p class="api-keys-desc">Create API keys to access WorldMonitor data programmatically. Keys are shown once on creation — store them securely.</p>
+          <p class="api-keys-desc">Create API keys to access WorldMonitor data programmatically. Keys are shown once on creation â€” store them securely.</p>
         </div>
         <div class="api-keys-create-form">
           <input type="text" class="api-keys-name-input" placeholder="Key name (e.g. my-app)" aria-label="API key name" maxlength="64" />
@@ -1881,7 +1881,7 @@ export class UnifiedSettings {
 
     banner.style.display = 'block';
     setTrustedHtml(banner, trustedHtml(`
-      <div class="api-keys-banner-title">Key created — copy it now, it won't be shown again</div>
+      <div class="api-keys-banner-title">Key created â€” copy it now, it won't be shown again</div>
       <div class="api-keys-banner-key">
         <code class="api-keys-key-value">${escapeHtml(key)}</code>
         <button class="btn btn-secondary api-keys-copy-btn">Copy</button>
@@ -1953,7 +1953,7 @@ export class UnifiedSettings {
   }
 
   // ---------------------------------------------------------------------------
-  // Embeds tab — partner-embed keys (`wme_…`)
+  // Embeds tab â€” partner-embed keys (`wme_â€¦`)
   //
   // Gated on `embedAccess`, never `apiAccess`: both Pro tiers sell embedding
   // without REST access, and the API Keys tab above would hide embed keys from
@@ -1987,7 +1987,7 @@ export class UnifiedSettings {
     }
 
     if (!hasEmbedAccessForAccount(authState.user?.role)) {
-      // Defensive — the tab is hidden entirely without embedAccess, so this
+      // Defensive â€” the tab is hidden entirely without embedAccess, so this
       // only shows if the subscription lapsed while the modal was open.
       const upgradeIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="16 12 12 8 8 12"/><line x1="12" y1="16" x2="12" y2="8"/></svg>`;
       return `
@@ -2003,7 +2003,7 @@ export class UnifiedSettings {
           <p class="embed-keys-desc">Embed keys authorise World Monitor panels on your site and nothing else, and each one is shown once at creation. Paste it into the <code>data-key</code> attribute of the <a class="embed-keys-docs-link" ${LEGAL_LINK_ATTR} href="${escapeHtml(`${WEB_APP_ORIGIN}/docs/embed-live-map`)}" target="_blank" rel="noopener noreferrer">embed loader</a>.</p>
         </div>
         <div class="embed-keys-note">
-          <strong>These are meant to be public.</strong> An embed key sits in your page's HTML where anyone can read it — that is the point, and it is why it exists as its own credential. Never put an API key (<code>wm_…</code>) there instead: that one carries your whole REST allowance. New reads with a revoked key are denied within about a minute. Already rendered paid-only panels remain visible until reload. A live map already showing its paid tier holds a session grant for up to 30 more minutes, then drops to the free tier.
+          <strong>These are meant to be public.</strong> An embed key sits in your page's HTML where anyone can read it â€” that is the point, and it is why it exists as its own credential. Never put an API key (<code>wm_â€¦</code>) there instead: that one carries your whole REST allowance. New reads with a revoked key are denied within about a minute. Already rendered paid-only panels remain visible until reload. A live map already showing its paid tier holds a session grant for up to 30 more minutes, then drops to the free tier.
         </div>
         <div class="embed-keys-create-form">
           <input type="text" class="embed-keys-name-input" placeholder="Key name (e.g. marketing-site)" aria-label="Embed key name" maxlength="64" />
@@ -2108,7 +2108,7 @@ export class UnifiedSettings {
 
     banner.style.display = 'block';
     setTrustedHtml(banner, trustedHtml(`
-      <div class="embed-keys-banner-title">Embed key created — copy it now, it won't be shown again</div>
+      <div class="embed-keys-banner-title">Embed key created â€” copy it now, it won't be shown again</div>
       <div class="embed-keys-banner-key">
         <code class="embed-keys-key-value">${escapeHtml(key)}</code>
         <button class="btn btn-secondary embed-keys-copy-btn">Copy</button>
@@ -2202,7 +2202,7 @@ export class UnifiedSettings {
     }
 
     if (!hasFeature('mcpAccess')) {
-      // Defensive — if the user lost mcpAccess (subscription lapsed) but the
+      // Defensive â€” if the user lost mcpAccess (subscription lapsed) but the
       // tab was still rendered, show an upgrade CTA. Normal flow hides the
       // tab entirely.
       const upgradeIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="16 12 12 8 8 12"/><line x1="12" y1="16" x2="12" y2="8"/></svg>`;
@@ -2217,7 +2217,7 @@ export class UnifiedSettings {
       <div class="mcp-clients-section">
         <div data-plan-limit-notices>${this.renderPlanLimitNotices()}</div>
         <div class="mcp-clients-header">
-          <p class="mcp-clients-desc">Connect Claude Desktop, Cursor, and other AI clients to your WorldMonitor account. Each client gets its own credential — revoke any time.</p>
+          <p class="mcp-clients-desc">Connect Claude Desktop, Cursor, and other AI clients to your WorldMonitor account. Each client gets its own credential â€” revoke any time.</p>
         </div>
         <div class="mcp-clients-quota" id="usMcpQuota" aria-live="polite">${this.renderMcpQuotaText()}</div>
         <div class="mcp-clients-error" id="usMcpClientsError" style="display:none;"></div>
@@ -2233,7 +2233,7 @@ export class UnifiedSettings {
       return `<span class="mcp-clients-quota-loading">Loading quota...</span>`;
     }
     const reset = this.formatQuotaReset(q.resetsAt);
-    // `limit: null` = unlimited plan (Enterprise) — there is no denominator to
+    // `limit: null` = unlimited plan (Enterprise) â€” there is no denominator to
     // show, so the counter reads "120 / unlimited".
     const limitLabel = q.limit === null ? 'unlimited' : String(q.limit);
     return `<span class="mcp-clients-quota-label">MCP daily quota:</span>
@@ -2302,12 +2302,12 @@ export class UnifiedSettings {
 
   /**
    * Auto-refresh the quota counter every 30s while the tab is visible.
-   * Cleared on tab-switch, close(), and destroy() — see stopMcpQuotaPolling.
+   * Cleared on tab-switch, close(), and destroy() â€” see stopMcpQuotaPolling.
    */
   private startMcpQuotaPolling(): void {
     if (this.mcpQuotaTimer) return; // idempotent
     this.mcpQuotaTimer = setInterval(() => {
-      // Skip silently if the tab is no longer visible — can happen if the
+      // Skip silently if the tab is no longer visible â€” can happen if the
       // overlay was hidden via display:none rather than full destroy().
       if (this.activeTab !== 'mcp-clients') return;
       void this.refreshMcpQuota();
